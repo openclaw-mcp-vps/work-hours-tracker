@@ -1,128 +1,169 @@
-export default function Page() {
-  const checkoutUrl = process.env.NEXT_PUBLIC_LS_CHECKOUT_URL || "#";
+import Link from "next/link";
+
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+const faqs = [
+  {
+    question: "How is actual coding time measured?",
+    answer:
+      "The desktop agent samples IDE process activity, tracks file edit bursts as keystroke proxies, and captures git commit frequency. Those signals are merged into active coding windows."
+  },
+  {
+    question: "Does this replace my timesheet tool?",
+    answer:
+      "No. It validates your timesheet by showing the difference between what was reported and what was observed. You keep your existing billing or PM workflow."
+  },
+  {
+    question: "Who gets value first?",
+    answer:
+      "Freelancers billing hourly get immediate protection against underbilling and overreporting. Startup engineering managers use it to reduce sprint estimation drift."
+  },
+  {
+    question: "Is this tracking screenshots or private content?",
+    answer:
+      "No screenshots. The app stores lightweight telemetry: activity windows, keystroke counts, and commit metadata."
+  }
+];
+
+export default function Home() {
+  const paymentLink = process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK as string;
 
   return (
-    <main className="min-h-screen bg-[#0d1117] text-[#c9d1d9]">
-      {/* Hero */}
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
-        <span className="inline-block mb-4 px-3 py-1 rounded-full bg-[#161b22] border border-[#30363d] text-xs text-[#58a6ff] uppercase tracking-widest">
-          Productivity
-        </span>
-        <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-5">
-          Track Actual Coding Hours<br />
-          <span className="text-[#58a6ff]">vs Reported Time</span>
-        </h1>
-        <p className="text-lg text-[#8b949e] max-w-xl mx-auto mb-8">
-          Connect your IDE and automatically log every minute you code. Compare real hours against what you report — and finally understand where your time goes.
-        </p>
-        <a
-          href={checkoutUrl}
-          className="inline-block bg-[#58a6ff] hover:bg-[#79b8ff] text-[#0d1117] font-semibold px-8 py-3 rounded-lg transition-colors text-base"
-        >
-          Start Tracking — $8/mo
-        </a>
-        <p className="mt-3 text-xs text-[#6e7681]">Cancel anytime. No credit card required to try.</p>
-
-        {/* Mock dashboard preview */}
-        <div className="mt-14 rounded-xl border border-[#30363d] bg-[#161b22] p-6 text-left">
-          <p className="text-xs text-[#6e7681] mb-4 uppercase tracking-widest">This week</p>
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            {[
-              { label: "Actual Coded", value: "31h 20m", color: "text-[#58a6ff]" },
-              { label: "Reported", value: "40h 00m", color: "text-[#f0883e]" },
-              { label: "Discrepancy", value: "-8h 40m", color: "text-[#f85149]" }
-            ].map((s) => (
-              <div key={s.label} className="bg-[#0d1117] rounded-lg p-4">
-                <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
-                <p className="text-xs text-[#6e7681] mt-1">{s.label}</p>
-              </div>
-            ))}
+    <main className="px-4 pb-20 pt-8 sm:px-6 lg:px-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-14">
+        <header className="rounded-2xl border border-[#2f3943] bg-[#111827]/80 p-8 shadow-[0_0_60px_rgba(47,129,247,0.1)] sm:p-12">
+          <p className="text-sm uppercase tracking-[0.2em] text-[#58a6ff]">Work Hours Tracker</p>
+          <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">
+            Track actual coding hours vs reported time.
+          </h1>
+          <p className="mt-5 max-w-3xl text-lg text-[#9fb0c3]">
+            Stop guessing how long engineering work really takes. Compare IDE activity, keystrokes, and git history against timesheet entries to expose estimate drift before it breaks delivery plans.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <a
+              href={paymentLink}
+              target="_blank"
+              rel="noreferrer"
+              className={cn(buttonVariants({ variant: "default", size: "lg" }), "shadow-[0_10px_35px_rgba(47,129,247,0.35)]")}
+            >
+              Start Accurate Tracking for $8/mo
+            </a>
+            <Link href="/access" className={buttonVariants({ variant: "secondary", size: "lg" })}>
+              I Already Purchased
+            </Link>
           </div>
-          <div className="space-y-2">
-            {[
-              { day: "Mon", actual: 75, reported: 100 },
-              { day: "Tue", actual: 90, reported: 100 },
-              { day: "Wed", actual: 55, reported: 100 },
-              { day: "Thu", actual: 80, reported: 100 },
-              { day: "Fri", actual: 60, reported: 100 }
-            ].map((d) => (
-              <div key={d.day} className="flex items-center gap-3">
-                <span className="text-xs text-[#6e7681] w-6">{d.day}</span>
-                <div className="flex-1 bg-[#0d1117] rounded h-2 overflow-hidden">
-                  <div className="h-full bg-[#58a6ff] rounded" style={{ width: `${d.actual}%` }} />
-                </div>
-                <div className="flex-1 bg-[#0d1117] rounded h-2 overflow-hidden">
-                  <div className="h-full bg-[#f0883e] rounded" style={{ width: `${d.reported}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-4 mt-4">
-            <span className="flex items-center gap-1 text-xs text-[#6e7681]"><span className="w-2 h-2 rounded-full bg-[#58a6ff] inline-block"></span>Actual</span>
-            <span className="flex items-center gap-1 text-xs text-[#6e7681]"><span className="w-2 h-2 rounded-full bg-[#f0883e] inline-block"></span>Reported</span>
-          </div>
-        </div>
-      </section>
+          <p className="mt-3 text-sm text-[#9fb0c3]">
+            Hosted Stripe checkout. Cancel anytime.
+          </p>
+        </header>
 
-      {/* Pricing */}
-      <section className="max-w-sm mx-auto px-6 pb-16">
-        <h2 className="text-2xl font-bold text-white text-center mb-8">Simple Pricing</h2>
-        <div className="rounded-xl border border-[#58a6ff] bg-[#161b22] p-8 text-center">
-          <p className="text-sm text-[#58a6ff] uppercase tracking-widest mb-2">Pro</p>
-          <p className="text-5xl font-bold text-white mb-1">$8</p>
-          <p className="text-sm text-[#6e7681] mb-6">per month</p>
-          <ul className="text-sm text-[#8b949e] space-y-3 mb-8 text-left">
-            {[
-              "VS Code & JetBrains plugin",
-              "Automatic time tracking",
-              "Self-reported hours log",
-              "Weekly discrepancy reports",
-              "Productivity trend charts",
-              "CSV export"
-            ].map((f) => (
-              <li key={f} className="flex items-center gap-2">
-                <span className="text-[#3fb950]">✓</span> {f}
-              </li>
-            ))}
-          </ul>
-          <a
-            href={checkoutUrl}
-            className="block w-full bg-[#58a6ff] hover:bg-[#79b8ff] text-[#0d1117] font-semibold py-3 rounded-lg transition-colors"
-          >
-            Get Started
-          </a>
-        </div>
-      </section>
+        <section id="problem" className="grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Estimate Drift</CardTitle>
+              <CardDescription>Developers overestimate coding and forget context switching overhead.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-[#9fb0c3]">
+              Teams report coding-heavy days, but actual deep-work windows are fragmented by debugging, sync meetings, and review cycles.
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Billing Risk</CardTitle>
+              <CardDescription>Freelancers lose revenue when real effort is not captured accurately.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-[#9fb0c3]">
+              Underbilling creates cash-flow pressure. Overbilling creates trust risk. Both come from inaccurate memory-based timesheets.
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Planning Blind Spots</CardTitle>
+              <CardDescription>Startup managers miss sprint goals because forecasts rely on self-reported effort.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-[#9fb0c3]">
+              This tool exposes the gap so standups and retrospectives can focus on the real blockers.
+            </CardContent>
+          </Card>
+        </section>
 
-      {/* FAQ */}
-      <section className="max-w-2xl mx-auto px-6 pb-24">
-        <h2 className="text-2xl font-bold text-white text-center mb-8">FAQ</h2>
-        <div className="space-y-4">
-          {[
-            {
-              q: "How does the IDE integration work?",
-              a: "Install our lightweight plugin for VS Code or JetBrains IDEs. It runs silently in the background, logging active coding sessions without capturing any code or file contents."
-            },
-            {
-              q: "Is my code or data ever uploaded?",
-              a: "Never. Only timestamps and session durations are sent to our servers. Your source code stays entirely on your machine."
-            },
-            {
-              q: "Can I cancel my subscription anytime?",
-              a: "Yes. Cancel with one click from your billing portal. You keep access until the end of your billing period with no questions asked."
-            }
-          ].map((item) => (
-            <div key={item.q} className="rounded-lg border border-[#30363d] bg-[#161b22] p-5">
-              <p className="font-semibold text-white mb-2">{item.q}</p>
-              <p className="text-sm text-[#8b949e]">{item.a}</p>
+        <section id="solution" className="rounded-2xl border border-[#2f3943] bg-[#111827]/70 p-8 sm:p-10">
+          <h2 className="text-3xl font-semibold">What you get</h2>
+          <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <div className="rounded-lg border border-[#2f3943] bg-[#0f1723] p-5">
+              <h3 className="text-xl font-semibold">Automatic Activity Capture</h3>
+              <p className="mt-2 text-[#9fb0c3]">
+                Desktop agent monitors IDE usage, keystroke activity patterns, and commit events so your timeline is based on evidence, not memory.
+              </p>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="rounded-lg border border-[#2f3943] bg-[#0f1723] p-5">
+              <h3 className="text-xl font-semibold">Gap Analytics Dashboard</h3>
+              <p className="mt-2 text-[#9fb0c3]">
+                Visualize actual vs reported hours by day, track over/under-reporting, and identify where estimation assumptions break down.
+              </p>
+            </div>
+            <div className="rounded-lg border border-[#2f3943] bg-[#0f1723] p-5">
+              <h3 className="text-xl font-semibold">Paywall + Access Cookie</h3>
+              <p className="mt-2 text-[#9fb0c3]">
+                Purchase once through Stripe Payment Link, verify your checkout email, then unlock the full dashboard with a secure access cookie.
+              </p>
+            </div>
+            <div className="rounded-lg border border-[#2f3943] bg-[#0f1723] p-5">
+              <h3 className="text-xl font-semibold">Actionable for Freelancers and Managers</h3>
+              <p className="mt-2 text-[#9fb0c3]">
+                Freelancers tighten billing confidence. Managers calibrate sprint plans using real coding bandwidth.
+              </p>
+            </div>
+          </div>
+        </section>
 
-      <footer className="border-t border-[#21262d] py-6 text-center text-xs text-[#6e7681]">
-        © {new Date().getFullYear()} Work Hours Tracker. All rights reserved.
-      </footer>
+        <section id="pricing" className="grid gap-4 md:grid-cols-[2fr_1fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle>Simple Pricing</CardTitle>
+              <CardDescription>One plan for freelancers, consultants, and startup engineering teams.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-5xl font-bold">$8<span className="text-base font-medium text-[#9fb0c3]">/month</span></p>
+              <ul className="mt-5 space-y-2 text-sm text-[#9fb0c3]">
+                <li>Desktop activity tracking agent</li>
+                <li>Actual vs reported comparison dashboard</li>
+                <li>14-day gap trend chart and accuracy score</li>
+                <li>Email-based paywall unlock for purchased users</li>
+              </ul>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Ready to start?</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <a href={paymentLink} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "default", size: "lg" })}>
+                Buy Now
+              </a>
+              <Link href="/access" className={buttonVariants({ variant: "outline", size: "lg" })}>
+                Unlock Dashboard
+              </Link>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section id="faq">
+          <h2 className="text-3xl font-semibold">FAQ</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {faqs.map((faq) => (
+              <Card key={faq.question}>
+                <CardHeader>
+                  <CardTitle className="text-base">{faq.question}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-[#9fb0c3]">{faq.answer}</CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      </div>
     </main>
   );
 }
